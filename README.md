@@ -11,7 +11,7 @@ VICE ATLAS n'est ni affilié, ni approuvé, ni sponsorisé par Rockstar Games ou
 
 Next.js 16 (App Router, Cache Components) · TypeScript strict · Tailwind CSS 4 · shadcn/ui (Radix) · Lucide ·
 Motion (animations) · Lenis (défilement fluide) · Zod · Supabase (`@supabase/ssr`) · Vitest + Testing Library.
-Prévus dans les phases suivantes : Leaflet / React Leaflet, Google Maps, Stripe.
+Leaflet / React Leaflet (carte en `CRS.Simple`). Prévus ensuite : Google Maps, Stripe.
 
 ## Démarrage
 
@@ -33,6 +33,30 @@ Ouvre http://localhost:3000.
 | `npm run typecheck` | Vérification TypeScript |
 | `npm run lint` | ESLint |
 | `npm run check` | Les trois à la suite |
+| `npm run test:db` | Migrations, seed et règles d'accès (RLS) testés sur un PostgreSQL local jetable |
+| `npm run db:seed:generate` | Régénère `supabase/seed.sql` depuis le contenu de démo |
+| `npm run map:generate` | Régénère la carte fictive de démonstration (SVG) |
+
+## Base de données (Supabase)
+
+Sans Supabase, le site fonctionne avec le contenu de démonstration et enregistre la progression du joueur
+dans le navigateur. Pour brancher la base :
+
+1. Crée un projet sur https://supabase.com (offre gratuite).
+2. Copie l'URL et la clé « anon » (Project Settings → API) dans `.env.local`.
+3. Applique les migrations puis le contenu de démo :
+
+```bash
+npx supabase link --project-ref <ref-du-projet>
+npx supabase db push
+psql "$SUPABASE_DB_URL" -f supabase/seed.sql
+```
+
+Pour donner le rôle d'administrateur à un compte (dans l'éditeur SQL de Supabase) :
+
+```sql
+insert into public.user_roles (user_id, role) values ('<id-du-compte>', 'admin');
+```
 
 ## Structure
 
@@ -52,6 +76,7 @@ tests/                  tests Vitest
 ```
 
 Page interne de démonstration des composants : `/design-system` (non indexée).
+Administration des guides : `/admin/guides` (mode aperçu tant que Supabase n'est pas configuré).
 
 ## Accessibilité et animations
 
@@ -61,7 +86,7 @@ de survol sont désactivés au tactile. Navigation complète au clavier, lien «
 ## Feuille de route
 
 1. ✅ Configuration, architecture, design et accueil
-2. Carte, carnet et guide
+2. ✅ Carte, carnet et guide
 3. Comparateur Miami
 4. Comptes et profils
 5. Avis VICE ATLAS, XP et badges

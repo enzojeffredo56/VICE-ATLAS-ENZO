@@ -221,3 +221,90 @@ html.lenis, html.lenis body { height: auto; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ------------------------------------------------------------------
+   Carte Leaflet
+   ------------------------------------------------------------------ */
+.va-map.leaflet-container {
+  background: #070b1a;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  outline: none;
+}
+.va-pin-wrap {
+  background: none;
+  border: none;
+}
+.va-pin {
+  position: relative;
+  display: block;
+  filter: drop-shadow(0 0 8px var(--pin));
+  transition: transform 0.2s ease;
+  transform-origin: 50% 100%;
+}
+.va-pin-wrap:hover .va-pin,
+.va-pin-wrap:focus-visible .va-pin {
+  transform: translateY(-4px) scale(1.12);
+}
+.va-pin--selected {
+  animation: float 3s ease-in-out infinite;
+}
+.va-pin svg {
+  position: relative;
+  display: block;
+}
+.va-pin-pulse {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 9999px;
+  background: var(--pin);
+  animation: pulse-ring 2.4s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+}
+.va-pin-star {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #0b1020;
+  color: #ffd166;
+  font-size: 12px;
+  line-height: 1;
+  box-shadow: 0 0 0 1.5px #ffd166;
+}
+.leaflet-marker-icon:focus-visible {
+  outline: 2px solid var(--va-cyan);
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+.va-map .leaflet-control-zoom {
+  border: 1px solid var(--va-line) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: 0 20px 40px -20px #000;
+  margin: 0 12px 12px 0 !important;
+}
+.va-map .leaflet-control-zoom a {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 38px !important;
+  background: rgb(17 24 49 / 0.9) !important;
+  color: var(--va-ink) !important;
+  border-bottom-color: var(--va-line) !important;
+  backdrop-filter: blur(10px);
+}
+.va-map .leaflet-control-zoom a:hover {
+  background: rgb(255 61 145 / 0.25) !important;
+}
+/* Sur mobile, on zoome au pincement : pas de boutons qui gêneraient la fiche */
+@media (max-width: 1023px) {
+  .va-map .leaflet-control-zoom {
+    display: none;
+  }
+}
