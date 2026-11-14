@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VICE ATLAS
 
-## Getting Started
+> Explore. Découvre. Relève les défis.
 
-First, run the development server:
+Plateforme **indépendante et non officielle** pour les joueurs de GTA 6 : carte interactive, carnet de progression,
+guide, comparateur Miami, STUNT ARENA et GTA Roulette. Site web + application mobile installable (PWA).
+
+VICE ATLAS n'est ni affilié, ni approuvé, ni sponsorisé par Rockstar Games ou Take-Two Interactive.
+
+## Stack
+
+Next.js 16 (App Router, Cache Components) · TypeScript strict · Tailwind CSS 4 · shadcn/ui (Radix) · Lucide ·
+Motion (animations) · Lenis (défilement fluide) · Zod · Supabase (`@supabase/ssr`) · Vitest + Testing Library.
+Prévus dans les phases suivantes : Leaflet / React Leaflet, Google Maps, Stripe.
+
+## Démarrage
+
+Prérequis : Node.js 20.9 ou plus récent (testé avec Node 22).
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvre http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Commande | Rôle |
+|---|---|
+| `npm run dev` | Serveur de développement |
+| `npm run build` puis `npm start` | Build et serveur de production |
+| `npm test` | Tests unitaires et de composants (Vitest) |
+| `npm run typecheck` | Vérification TypeScript |
+| `npm run lint` | ESLint |
+| `npm run check` | Les trois à la suite |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Structure
 
-## Learn More
+```
+src/
+  app/                  routes (accueil, pages modules, manifest PWA, 404, erreur…)
+  components/
+    brand/              logo boussole original
+    home/               sections animées de l'accueil
+    layout/             en-tête, menu mobile, barre d'onglets, pied de page
+    motion/             effets réutilisables (apparition au scroll, tilt 3D, magnétique…)
+    states/             chargement, état vide, « bientôt disponible »
+    ui/                 composants shadcn/ui
+  lib/                  config du site, env (Zod), Supabase, XP, roulette
+supabase/migrations/    migrations SQL versionnées
+tests/                  tests Vitest
+```
 
-To learn more about Next.js, take a look at the following resources:
+Page interne de démonstration des composants : `/design-system` (non indexée).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Accessibilité et animations
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Toutes les animations respectent « Réduire les animations » du système. Le défilement fluide et les effets
+de survol sont désactivés au tactile. Navigation complète au clavier, lien « Aller au contenu ».
 
-## Deploy on Vercel
+## Feuille de route
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. ✅ Configuration, architecture, design et accueil
+2. Carte, carnet et guide
+3. Comparateur Miami
+4. Comptes et profils
+5. Avis VICE ATLAS, XP et badges
+6. GTA Roulette et salons
+7. STUNT ARENA
+8. Communauté, classements et administration
+9. Tests, sécurité, optimisation et PWA (service worker, hors ligne)
+10. VICE ATLAS PLUS, Stripe et parrainage Premium

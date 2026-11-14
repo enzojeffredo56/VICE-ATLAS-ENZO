@@ -1,26 +1,223 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------
+   VICE ATLAS — thème « Miami Neon »
+   Palette officielle du projet (voir docs/design.md)
+   ------------------------------------------------------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Palette de marque */
+  --va-night: #0b1020;
+  --va-pink: #ff3d91;
+  --va-cyan: #00d4ff;
+  --va-violet: #8b5cf6;
+  --va-turquoise: #2dd4bf;
+  --va-ink: #f8fafc;
+
+  /* Surfaces dérivées */
+  --va-surface: #111831;
+  --va-surface-2: #171f3d;
+  --va-line: rgb(248 250 252 / 0.09);
+  --va-muted: #a3adc2;
+
+  /* Jetons shadcn/ui (un seul thème : sombre) */
+  --radius: 0.875rem;
+  --background: var(--va-night);
+  --foreground: var(--va-ink);
+  --card: var(--va-surface);
+  --card-foreground: var(--va-ink);
+  --popover: var(--va-surface-2);
+  --popover-foreground: var(--va-ink);
+  --primary: var(--va-pink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--va-surface-2);
+  --secondary-foreground: var(--va-ink);
+  --muted: var(--va-surface-2);
+  --muted-foreground: var(--va-muted);
+  --accent: rgb(0 212 255 / 0.12);
+  --accent-foreground: var(--va-ink);
+  --destructive: #f43f5e;
+  --border: var(--va-line);
+  --input: rgb(248 250 252 / 0.14);
+  --ring: var(--va-cyan);
+
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-night: var(--va-night);
+  --color-surface: var(--va-surface);
+  --color-surface-2: var(--va-surface-2);
+  --color-pink: var(--va-pink);
+  --color-cyan: var(--va-cyan);
+  --color-violet: var(--va-violet);
+  --color-turquoise: var(--va-turquoise);
+  --color-ink: var(--va-ink);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 12px);
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-spin-slow: spin 24s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+  --animate-shimmer: shimmer 2.2s linear infinite;
+  --animate-grid: grid-scroll 3.5s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.6); opacity: 0; }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: -16; }
+  }
+  @keyframes grid-scroll {
+    from { background-position: 0 0; }
+    to { background-position: 0 64px; }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-color: var(--va-night);
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+  ::selection {
+    background: rgb(255 61 145 / 0.35);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--va-cyan);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Texte dégradé néon */
+  .text-neon {
+    background: linear-gradient(100deg, var(--va-pink) 0%, var(--va-violet) 45%, var(--va-cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-glow-pink { text-shadow: 0 0 24px rgb(255 61 145 / 0.55); }
+  .text-glow-cyan { text-shadow: 0 0 24px rgb(0 212 255 / 0.55); }
+
+  /* Panneau verre */
+  .glass {
+    background: linear-gradient(180deg, rgb(23 31 61 / 0.72), rgb(17 24 49 / 0.6));
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid var(--va-line);
+  }
+
+  /* Bordure animée (conic) */
+  .neon-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .neon-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle, 0deg), var(--va-pink), var(--va-violet), var(--va-cyan), var(--va-turquoise), var(--va-pink));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: angle-spin 6s linear infinite;
+  }
+
+  /* Grille rétro en perspective */
+  .neon-grid {
+    background-image:
+      linear-gradient(to right, rgb(255 61 145 / 0.35) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(0 212 255 / 0.3) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Grain très léger */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes angle-spin {
+  to { --angle: 360deg; }
+}
+
+/* Lenis (défilement fluide) */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Accessibilité : on coupe les animations si l'utilisateur le demande */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
