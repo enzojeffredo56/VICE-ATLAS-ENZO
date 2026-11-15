@@ -1,4 +1,5 @@
-import { Dices } from "lucide-react";
+import Link from "next/link";
+import { Dices, Flame } from "lucide-react";
 import { CHALLENGE_CATEGORIES } from "@/content/challenges";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatDateFr } from "@/lib/text";
@@ -7,6 +8,12 @@ import { ProfileSection } from "./profile-sections";
 /** Activité du joueur : historique GTA Roulette (+ STUNT ARENA et parrainage, phases 7 et 10). */
 export async function ProfileActivity({ userId }: { userId: string; referralCode: string }) {
   const sb = await createSupabaseServerClient();
+  const { data: entries } = await sb
+    .from("stunt_entries")
+    .select("id,title,status,withdrawn_at,stunt_competitions(week_start,places(name)),competition_results(rank)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(10);
   const { data: spins } = await sb
     .from("room_spins")
     .select("id,created_at,rooms(name),challenges(title,category)")
@@ -14,6 +21,33 @@ export async function ProfileActivity({ userId }: { userId: string; referralCode
     .order("created_at", { ascending: false })
     .limit(10);
   return (
+    <>
+    <ProfileSection id="stunts" title="Participations STUNT ARENA" icon={<Flame className="size-5 text-pink" aria-hidden />}>
+      {!entries?.length ? (
+        <p className="text-muted-foreground">
+          Aucune participation pour l&apos;instant.{" "}
+          <Link href="/stunts/participer" className="text-cyan underline-offset-4 hover:underline">
+            Publier une cascade
+          </Link>
+        </p>
+      ) : (
+        <ul className="space-y-2">
+          {entries.map((e) => {
+            const c = e.stunt_competitions as unknown as { week_start: string; places: { name: string } };
+            const rank = (e.competition_results as unknown as { rank: number }[] | null)?.[0]?.rank;
+            const status = e.withdrawn_at ? "retirée" : e.status === "approved" ? "publiée" : e.status === "pending" ? "en vérification" : "refusée";
+            return (
+              <li key={e.id} className="flex items-center gap-3 text-sm">
+                <span className="min-w-0 flex-1 truncate">{e.title}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {c.places.name} · {formatDateFr(c.week_start)} · {rank ? `${rank}e place` : status}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </ProfileSection>
     <ProfileSection id="roulette" title="Historique GTA Roulette" icon={<Dices className="size-5 text-[#b49cff]" aria-hidden />}>
       {!spins?.length ? (
         <p className="text-muted-foreground">Aucun tirage dans un salon pour l&apos;instant.</p>
@@ -35,5 +69,6 @@ export async function ProfileActivity({ userId }: { userId: string; referralCode
         </ul>
       )}
     </ProfileSection>
+    </>
   );
 }
