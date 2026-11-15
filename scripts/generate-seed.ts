@@ -6,6 +6,7 @@ import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { demoProgressItems } from "../src/content/carnet";
 import { demoCorrespondences, miamiSpots } from "../src/content/comparateur";
+import { OFFICIAL_CHALLENGES } from "../src/content/challenges";
 import { guideCategories, demoGuides } from "../src/content/guides";
 import { demoPlaces, placeCategories } from "../src/content/map";
 
@@ -77,6 +78,11 @@ const lines: string[] = [
   "join public.places p on p.slug = s.place_slug join public.miami_spots m on m.slug = s.miami_slug",
   "on conflict (place_id, miami_spot_id) do update set summary = excluded.summary, status = excluded.status,",
   "  sources = excluded.sources, publication = excluded.publication, is_demo = true;",
+  "",
+  "insert into public.challenges (slug, title, description, category, difficulty, is_custom, status) values",
+  OFFICIAL_CHALLENGES.map((c) => `  (${q(c.slug)}, ${q(c.title)}, ${c.description ? q(c.description) : "null"}, ${q(c.category)}, ${q(c.difficulty)}, false, 'approved')`).join(",\n"),
+  "on conflict (slug) do update set title = excluded.title, description = excluded.description, category = excluded.category,",
+  "  difficulty = excluded.difficulty, status = excluded.status;",
   "",
   "commit;",
   "",

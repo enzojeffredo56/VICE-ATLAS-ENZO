@@ -115,4 +115,32 @@ join public.places p on p.slug = s.place_slug join public.miami_spots m on m.slu
 on conflict (place_id, miami_spot_id) do update set summary = excluded.summary, status = excluded.status,
   sources = excluded.sources, publication = excluded.publication, is_demo = true;
 
+insert into public.challenges (slug, title, description, category, difficulty, is_custom, status) values
+  ('vehicules-roses', 'Ne conduis que des véhicules roses pendant 15 minutes', null, 'style', 'facile', false, 'approved'),
+  ('coucher-de-soleil', 'Photographie un coucher de soleil depuis la plage', null, 'photo', 'facile', false, 'approved'),
+  ('saut-moto', 'Réussis le plus long saut possible à moto', null, 'cascade', 'facile', false, 'approved'),
+  ('tenue-assortie', 'Assortis ta tenue à la couleur de ton véhicule', null, 'style', 'facile', false, 'approved'),
+  ('tour-du-port', 'Fais le tour complet du port sans t''arrêter', null, 'conduite', 'facile', false, 'approved'),
+  ('toit-le-plus-haut', 'Prends une photo depuis le toit le plus haut que tu trouves', null, 'photo', 'facile', false, 'approved'),
+  ('trois-quartiers', 'Traverse trois quartiers différents en moins de 5 minutes', null, 'exploration', 'facile', false, 'approved'),
+  ('radio-unique', 'Garde la même station de radio pendant toute la session', null, 'style', 'facile', false, 'approved'),
+  ('point-culminant', 'Atteins le point le plus haut de la ville à pied', null, 'exploration', 'moyenne', false, 'approved'),
+  ('sans-frein-a-main', 'Termine une course sans utiliser le frein à main', null, 'conduite', 'moyenne', false, 'approved'),
+  ('sans-gps', 'Rejoins ta crew en moins de 3 minutes, sans GPS', null, 'exploration', 'moyenne', false, 'approved'),
+  ('photo-de-groupe', 'Réalise une photo de groupe avec toute ta crew dans le cadre', null, 'photo', 'moyenne', false, 'approved'),
+  ('convoi', 'Roulez en convoi à travers la ville sans vous perdre de vue', null, 'conduite', 'moyenne', false, 'approved'),
+  ('tremplin-improvise', 'Trouve un tremplin naturel et réussis un saut propre', null, 'cascade', 'moyenne', false, 'approved'),
+  ('lieu-inconnu', 'Trouve un lieu qu''aucun membre de la crew ne connaissait', null, 'exploration', 'moyenne', false, 'approved'),
+  ('photo-nuit-neon', 'Capture une photo de nuit éclairée uniquement par des néons', null, 'photo', 'moyenne', false, 'approved'),
+  ('derapage-controle', 'Enchaîne un dérapage contrôlé sur trois virages', null, 'conduite', 'moyenne', false, 'approved'),
+  ('triple-cascade', 'Enchaîne trois cascades sans t''arrêter', null, 'cascade', 'difficile', false, 'approved'),
+  ('sans-contact', 'Traverse la ville sans toucher un seul véhicule', null, 'conduite', 'difficile', false, 'approved'),
+  ('atterrissage-parfait', 'Atterris un saut sur les quatre roues sans rebond', null, 'cascade', 'difficile', false, 'approved'),
+  ('course-cote', 'Longe toute la côte en un seul trajet, sans quitter la route', null, 'conduite', 'difficile', false, 'approved'),
+  ('photo-action', 'Prends une photo nette d''un véhicule en plein saut', null, 'photo', 'difficile', false, 'approved'),
+  ('tour-des-iles', 'Visite toutes les îles de la carte en une session', null, 'exploration', 'difficile', false, 'approved'),
+  ('style-signature', 'Crée une tenue signature et garde-la toute la semaine', null, 'style', 'difficile', false, 'approved')
+on conflict (slug) do update set title = excluded.title, description = excluded.description, category = excluded.category,
+  difficulty = excluded.difficulty, status = excluded.status;
+
 commit;
