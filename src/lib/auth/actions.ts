@@ -116,6 +116,8 @@ export async function updateProfileAction(_prev: FormState, fd: FormData): Promi
     .eq("id", user.id);
   if (error?.code === "23505") return { ok: false, fieldErrors: { username: "Ce pseudo est déjà pris." }, message: "Choisis un autre pseudo." };
   if (error) return { ok: false, message: "Enregistrement impossible pour le moment." };
+  const { data: claim } = await sb.rpc("claim_profile_completion");
+  if ((claim as { granted?: boolean } | null)?.granted) return { ok: true, message: "Profil complété : +30 XP !" };
   return { ok: true, message: "Profil enregistré." };
 }
 
@@ -131,5 +133,7 @@ export async function setAvatarAction(url: string | null): Promise<FormState> {
   if (url !== null && (!url.startsWith(prefix) || url.length > 500)) return { ok: false, message: "Image refusée." };
   const { error } = await sb.from("profiles").update({ avatar_url: url }).eq("id", user.id);
   if (error) return { ok: false, message: "Enregistrement impossible pour le moment." };
+  const { data: claim } = await sb.rpc("claim_profile_completion");
+  if ((claim as { granted?: boolean } | null)?.granted) return { ok: true, message: "Profil complété : +30 XP !" };
   return { ok: true, message: url ? "Avatar mis à jour." : "Avatar retiré." };
 }

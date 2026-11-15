@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 const SECTIONS = [
   { href: "/admin/guides", label: "Guides", text: "Créer, modifier et publier les guides.", icon: BookOpenText, phase: null },
   { href: null, label: "Lieux de la carte", text: "Gestion des lieux et catégories.", icon: Map, phase: 8 },
-  { href: null, label: "Avis", text: "Modération des avis VICE ATLAS.", icon: Star, phase: 5 },
+  { href: "/admin/avis", label: "Avis", text: "Modération des avis VICE ATLAS.", icon: Star, phase: null },
   { href: null, label: "STUNT ARENA", text: "Vidéos, concours et résultats.", icon: Flame, phase: 7 },
   { href: null, label: "Utilisateurs et rôles", text: "Comptes, rôles et sanctions.", icon: Users, phase: 8 },
   { href: null, label: "XP et badges", text: "Historique et corrections justifiées.", icon: Trophy, phase: 5 },
