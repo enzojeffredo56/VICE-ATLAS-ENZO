@@ -2,10 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isAuthorizedCron } from "@/lib/cron";
 import { serverEnv } from "@/lib/env.server";
 import { createSupabaseServiceClient } from "@/lib/supabase/admin";
+import { applyPendingCredits } from "@/lib/billing/credits";
+import { getStripe } from "@/lib/billing/stripe";
 
 /**
  * Tâche planifiée quotidienne (vercel.json) — idempotente :
- * crée les concours STUNT ARENA de la semaine (et de la suivante) et le défi de la semaine.
+ * crée les concours STUNT ARENA de la semaine (et de la suivante), le défi de la semaine,
+ * décide des récompenses de parrainage arrivées à échéance et applique les mois offerts.
  */
 export async function GET(request: NextRequest) {
   if (!isAuthorizedCron(request.headers.get("authorization"), serverEnv().CRON_SECRET)) {
@@ -18,7 +21,9 @@ export async function GET(request: NextRequest) {
     sb.rpc("ensure_weekly_challenge"),
     sb.rpc("process_referral_rewards"),
   ]);
-  const error = competitions.error ?? weekly.error;
+  const error = competitions.error ?? weekly.error ?? referrals.error;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true, competitionsCreated: competitions.data, weeklyChallenge: weekly.data, referrals: referrals.data ?? null });
+  const stripe = getStripe();
+  const creditsApplied = stripe ? await applyPendingCredits(stripe, sb) : 0;
+  return NextResponse.json({ ok: true, competitionsCreated: competitions.data, weeklyChallenge: weekly.data, referrals: referrals.data, creditsApplied });
 }

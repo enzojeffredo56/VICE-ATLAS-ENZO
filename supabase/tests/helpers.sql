@@ -1,6 +1,6 @@
 -- Petites fonctions d'assertion pour les tests SQL (local uniquement).
 create schema if not exists test;
-grant usage on schema test to anon, authenticated;
+grant usage on schema test to anon, authenticated, service_role;
 
 create or replace function test.ok(cond boolean, label text) returns text language plpgsql as $$
 begin
@@ -31,4 +31,4 @@ create or replace function test.login(uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims', case when uid is null then '' else json_build_object('sub', uid)::text end, false);
 $$;
 
-grant execute on all functions in schema test to anon, authenticated;
+grant execute on all functions in schema test to anon, authenticated, service_role;

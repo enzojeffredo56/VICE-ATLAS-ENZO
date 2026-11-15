@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { Dices, Flame } from "lucide-react";
+import { Dices, Flame, Gift } from "lucide-react";
+import { ReferralShare } from "@/components/plus/referral-share";
 import { CHALLENGE_CATEGORIES } from "@/content/challenges";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatDateFr } from "@/lib/text";
 import { ProfileSection } from "./profile-sections";
 
 /** Activité du joueur : historique GTA Roulette (+ STUNT ARENA et parrainage, phases 7 et 10). */
-export async function ProfileActivity({ userId }: { userId: string; referralCode: string }) {
+export async function ProfileActivity({ userId, referralCode }: { userId: string; referralCode: string }) {
   const sb = await createSupabaseServerClient();
   const { data: entries } = await sb
     .from("stunt_entries")
@@ -68,6 +69,15 @@ export async function ProfileActivity({ userId }: { userId: string; referralCode
           })}
         </ul>
       )}
+    </ProfileSection>
+    <ProfileSection id="parrainage" title="Parrainage" icon={<Gift className="size-5 text-pink" aria-hidden />}>
+      <p className="mb-4 text-sm text-muted-foreground">
+        Un ami qui s&apos;abonne à VICE ATLAS PLUS avec ton code = un mois offert pour toi (après vérification).{" "}
+        <Link href="/plus/parrainage" className="text-cyan underline-offset-4 hover:underline">
+          Voir mes récompenses
+        </Link>
+      </p>
+      <ReferralShare code={referralCode} />
     </ProfileSection>
     </>
   );

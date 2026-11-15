@@ -25,7 +25,7 @@ trap cleanup EXIT
 
 PSQL=("${RUN_AS[@]}" psql -X -q -v ON_ERROR_STOP=1 -h "$SOCK" -p "$PORT" -U postgres -d postgres)
 "${PSQL[@]}" -f supabase/tests/00_supabase_shim.sql
-for f in supabase/migrations/*.sql; do
+for f in $(ls supabase/migrations/*.sql | sort -V); do
   echo "→ migration $(basename "$f")"
   "${PSQL[@]}" -f "$f"
 done
@@ -34,7 +34,7 @@ echo "→ seed"
 echo "→ seed rejoué (idempotence)"
 "${PSQL[@]}" -f supabase/seed.sql
 "${PSQL[@]}" -f supabase/tests/helpers.sql
-for t in supabase/tests/*.test.sql; do
+for t in $(ls supabase/tests/*.test.sql | sort -V); do
   echo "→ $(basename "$t")"
   "${PSQL[@]}" -f "$t"
 done

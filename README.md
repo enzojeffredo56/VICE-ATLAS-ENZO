@@ -11,7 +11,7 @@ VICE ATLAS n'est ni affilié, ni approuvé, ni sponsorisé par Rockstar Games ou
 
 Next.js 16 (App Router, Cache Components) · TypeScript strict · Tailwind CSS 4 · shadcn/ui (Radix) · Lucide ·
 Motion (animations) · Lenis (défilement fluide) · Zod · Supabase (`@supabase/ssr`) · Vitest + Testing Library.
-Leaflet / React Leaflet (cartes en `CRS.Simple` sur des plans dessinés par VICE ATLAS). Prévu ensuite : Stripe.
+Leaflet / React Leaflet (cartes en `CRS.Simple` sur des plans dessinés par VICE ATLAS), Stripe (abonnement VICE ATLAS PLUS), Playwright (tests de bout en bout).
 
 ## Démarrage
 
@@ -33,6 +33,7 @@ Ouvre http://localhost:3000.
 | `npm run typecheck` | Vérification TypeScript |
 | `npm run lint` | ESLint |
 | `npm run check` | Les trois à la suite |
+| `npm run test:e2e` | Tests de bout en bout ordinateur + mobile (après `npm run build`) |
 | `npm run test:db` | Migrations, seed et règles d'accès (RLS) testés sur un PostgreSQL local jetable |
 | `npm run db:seed:generate` | Régénère `supabase/seed.sql` depuis le contenu de démo |
 | `npm run map:generate` | Régénère la carte fictive et le plan schématique de Miami (SVG) |
@@ -88,10 +89,34 @@ de survol sont désactivés au tactile. Navigation complète au clavier, lien «
 1. ✅ Configuration, architecture, design et accueil
 2. ✅ Carte, carnet et guide
 3. ✅ Comparateur Miami (plans dessinés par VICE ATLAS, sans Google)
-4. Comptes et profils
-5. Avis VICE ATLAS, XP et badges
-6. GTA Roulette et salons
-7. STUNT ARENA
-8. Communauté, classements et administration
-9. Tests, sécurité, optimisation et PWA (service worker, hors ligne)
-10. VICE ATLAS PLUS, Stripe et parrainage Premium
+4. ✅ Comptes et profils
+5. ✅ Avis VICE ATLAS, XP et badges
+6. ✅ GTA Roulette et salons
+7. ✅ STUNT ARENA
+8. ✅ Communauté, classements et administration
+9. ✅ Tests, sécurité, optimisation et PWA (service worker, hors ligne)
+10. ✅ VICE ATLAS PLUS, Stripe et parrainage Premium (paiements fermés par défaut)
+
+## Mise en production (dans cet ordre)
+
+1. **Supabase** : créer le projet, appliquer les migrations (`npx supabase db push`) puis `supabase/seed.sql`.
+   Dans Authentication → URL Configuration, mettre l'adresse du site ; dans Email Templates, utiliser des liens
+   `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=…`. Activer Realtime sur `room_spins`, `room_members`
+   et `notifications`.
+2. **Vercel** : importer le dépôt GitHub, renseigner les variables de `.env.example`. La tâche planifiée
+   (`vercel.json`) crée chaque jour les concours STUNT ARENA et le défi de la semaine, décide des récompenses de
+   parrainage et applique les mois offerts.
+3. **Premier administrateur** : `insert into public.user_roles (user_id, role) values ('<id>', 'admin');`
+4. **Stripe en mode test** : produit « VICE ATLAS PLUS » à 4,99 €/mois, webhook vers `/api/stripe/webhook`
+   (événements : `checkout.session.completed`, `customer.subscription.*`, `invoice.paid`, `charge.refunded`,
+   `charge.dispute.created`), portail client activé. Tester souscription, résiliation, remboursement.
+5. **Ouvrir les paiements** seulement ensuite : `PAYMENTS_ENABLED=true` et clés Stripe live.
+
+## Règles métier clés
+
+- XP attribués uniquement par la base (registre infalsifiable, anti-doublon, corrections justifiées et auditées).
+- Avis : +20 XP après approbation, **quelle que soit la note**.
+- STUNT ARENA (heure de Paris) : participations lundi → vendredi, votes samedi → dimanche, résultats confirmés
+  par un modérateur ; égalités partagées ; +10 / +150 / +75 / +40 XP.
+- Parrainage : 1 mois offert au parrain quand un filleul paie son premier abonnement, après 14 jours sans
+  remboursement ni litige ; crédit déduit des échéances, jamais remboursé en argent.

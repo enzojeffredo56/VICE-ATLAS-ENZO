@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
 type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: "accepted" | "dismissed" }> };
@@ -10,10 +10,25 @@ const PwaContext = createContext<PwaState>({ canInstall: false, install: async (
 export const usePwa = () => useContext(PwaContext);
 
 /** Enregistre le service worker (production), gère l'installation et l'état hors ligne. */
+const STANDALONE = "(display-mode: standalone)";
+function subscribeOnline(cb: () => void) {
+  window.addEventListener("online", cb);
+  window.addEventListener("offline", cb);
+  return () => {
+    window.removeEventListener("online", cb);
+    window.removeEventListener("offline", cb);
+  };
+}
+function subscribeStandalone(cb: () => void) {
+  const mq = window.matchMedia(STANDALONE);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
 export function PwaProvider({ children }: { children: React.ReactNode }) {
   const [deferred, setDeferred] = useState<InstallEvent | null>(null);
-  const [online, setOnline] = useState(true);
-  const [standalone, setStandalone] = useState(false);
+  const online = useSyncExternalStore(subscribeOnline, () => navigator.onLine, () => true);
+  const standalone = useSyncExternalStore(subscribeStandalone, () => window.matchMedia(STANDALONE).matches, () => false);
 
   useEffect(() => {
     if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
@@ -29,29 +44,17 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
       setDeferred(null);
       toast.success("VICE ATLAS est installé sur ton appareil !");
     };
-    const goOffline = () => {
-      setOnline(false);
-      toast.info("Tu es hors ligne", { description: "Ton carnet reste enregistré sur l'appareil." });
-    };
-    const goOnline = () => {
-      setOnline(true);
-      toast.success("De retour en ligne");
-    };
-    const mq = window.matchMedia("(display-mode: standalone)");
-    const syncStandalone = () => setStandalone(mq.matches);
-    syncStandalone();
+    const goOffline = () => toast.info("Tu es hors ligne", { description: "Ton carnet reste enregistré sur l'appareil." });
+    const goOnline = () => toast.success("De retour en ligne");
     window.addEventListener("beforeinstallprompt", onPrompt);
     window.addEventListener("appinstalled", onInstalled);
     window.addEventListener("offline", goOffline);
     window.addEventListener("online", goOnline);
-    mq.addEventListener("change", syncStandalone);
-    if (!navigator.onLine) setOnline(false);
     return () => {
       window.removeEventListener("beforeinstallprompt", onPrompt);
       window.removeEventListener("appinstalled", onInstalled);
       window.removeEventListener("offline", goOffline);
       window.removeEventListener("online", goOnline);
-      mq.removeEventListener("change", syncStandalone);
     };
   }, []);
 
