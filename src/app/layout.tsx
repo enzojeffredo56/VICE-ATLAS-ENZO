@@ -8,6 +8,7 @@ import { ScrollProgress } from "@/components/motion/scroll-progress";
 import { CursorGlow } from "@/components/motion/cursor-glow";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth/auth-provider";
+import { PwaProvider } from "@/components/pwa/pwa-provider";
 import { publicEnv } from "@/lib/env";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <MotionProviders>
           <AuthProvider>
+          <PwaProvider>
           <ScrollProgress />
           <CursorGlow />
           <SiteHeader />
@@ -62,6 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteFooter />
           <MobileTabBar />
           <Toaster />
+          </PwaProvider>
           </AuthProvider>
         </MotionProviders>
       </body>

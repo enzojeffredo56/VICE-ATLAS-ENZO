@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoMark } from "@/components/brand/logo-mark";
+import { InstallButton } from "@/components/pwa/pwa-provider";
 import { mainNav, secondaryNav, siteConfig } from "@/lib/site-config";
 
 export function SiteFooter() {
@@ -12,6 +13,7 @@ export function SiteFooter() {
             <span className="text-sunset font-brand pr-1 text-4xl leading-none">Vice Atlas</span>
           </div>
           <p className="max-w-sm text-sm text-muted-foreground">{siteConfig.slogan}</p>
+          <InstallButton className="cursor-pointer rounded-full border border-pink/40 bg-pink/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-pink/20" />
           <p className="max-w-md text-xs leading-relaxed text-muted-foreground/80">{siteConfig.disclaimer}</p>
         </div>
         <FooterColumn title="Explorer" items={mainNav} />
