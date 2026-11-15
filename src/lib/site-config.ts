@@ -9,6 +9,7 @@ import {
   Star,
   Trophy,
   Crown,
+  HandHeart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -105,6 +106,7 @@ export const mainNav: NavItem[] = modules.map((m) => ({ href: m.href, label: m.s
 
 export const secondaryNav: NavItem[] = [
   { href: "/classements", label: "Classements", icon: Trophy },
+  { href: "/communaute", label: "Communauté", icon: HandHeart },
   { href: "/avis", label: "Avis", icon: Star },
   { href: "/plus", label: "VICE ATLAS PLUS", icon: Crown },
   { href: "/a-propos", label: "À propos", icon: Compass },

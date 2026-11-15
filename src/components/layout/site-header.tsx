@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { MobileAccountButtons, UserMenu } from "@/components/auth/user-menu";
+import { NotificationBell } from "@/components/community/notification-bell";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -87,6 +88,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <UserMenu />
 
           <Sheet open={open} onOpenChange={setOpen}>
