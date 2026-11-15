@@ -5,8 +5,9 @@
 -- =====================================================================
 
 -- Extensions
-create extension if not exists pgcrypto;  -- gen_random_uuid()
-create extension if not exists citext;    -- pseudos insensibles à la casse (phase 4)
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;  -- fonctions cryptographiques
+create extension if not exists citext with schema extensions;    -- pseudos insensibles à la casse (phase 4)
 
 -- Schéma privé pour les fonctions internes (non exposé par l'API REST)
 create schema if not exists private;

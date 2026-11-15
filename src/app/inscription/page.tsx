@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
-import { UserPlus } from "lucide-react";
-import { ComingSoon } from "@/components/states/coming-soon";
+import Link from "next/link";
+import { AuthCard } from "@/components/forms/auth-card";
+import { SignUpForm } from "@/components/forms/sign-up-form";
 
-export const metadata: Metadata = { title: "Rejoindre VICE ATLAS" };
+export const metadata: Metadata = { title: "Créer un compte" };
 
-export default function Page() {
+export default function InscriptionPage() {
   return (
-    <ComingSoon
-      title="Rejoindre VICE ATLAS"
-      description="Crée ton profil joueur : pseudo unique, avatar, progression et badges."
-      icon={UserPlus}
-      phase={4}
-      features={["Pseudo unique et avatar", "Profil public ou privé", "Code de parrainage"]}
-    />
+    <AuthCard
+      title="Rejoins VICE ATLAS"
+      subtitle="Ta progression, tes badges et tes défis, sur tous tes appareils."
+      footer={
+        <>
+          Déjà inscrit ?{" "}
+          <Link href="/connexion" className="text-cyan underline-offset-4 hover:underline">
+            Se connecter
+          </Link>
+        </>
+      }
+    >
+      <SignUpForm />
+    </AuthCard>
   );
 }

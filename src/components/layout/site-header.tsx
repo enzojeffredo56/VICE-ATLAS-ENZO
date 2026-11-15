@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useState } from "react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { MobileAccountButtons, UserMenu } from "@/components/auth/user-menu";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -86,14 +87,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link href="/connexion">Connexion</Link>
-          </Button>
-          <Button asChild size="sm" className="hidden sm:inline-flex">
-            <Link href="/inscription">
-              Rejoindre <ArrowUpRight />
-            </Link>
-          </Button>
+          <UserMenu />
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -174,16 +168,7 @@ function MobileMenuLinks({
         )}
       </AnimatePresence>
       <div className="mt-auto grid grid-cols-2 gap-2 pt-6 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
-        <Button asChild variant="outline">
-          <Link href="/connexion" onClick={onNavigate}>
-            Connexion
-          </Link>
-        </Button>
-        <Button asChild>
-          <Link href="/inscription" onClick={onNavigate}>
-            Rejoindre
-          </Link>
-        </Button>
+        <MobileAccountButtons onNavigate={onNavigate} />
       </div>
     </nav>
   );

@@ -20,6 +20,8 @@ type Options = {
 export function createUserDataStore({ storage, now = () => new Date(), newId, debounceMs = 250 }: Options) {
   let state: UserData | null = null;
   let status: SaveStatus = "idle";
+  /** Compteur de modifications faites par le joueur (pas par la synchronisation). */
+  let revision = 0;
   let timer: ReturnType<typeof setTimeout> | null = null;
   const listeners = new Set<() => void>();
   const makeId = newId ?? (() => (globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`));
@@ -60,6 +62,7 @@ export function createUserDataStore({ storage, now = () => new Date(), newId, de
   }
 
   function update(mutate: (draft: UserData) => UserData) {
+    revision++;
     state = { ...mutate(getState()), updatedAt: now().toISOString() };
     persist();
     emit();
@@ -70,6 +73,22 @@ export function createUserDataStore({ storage, now = () => new Date(), newId, de
   return {
     getState,
     getStatus: () => status,
+    getRevision: () => revision,
+    /** Remplace tout l'état (données reçues du compte), sans compter comme une modification du joueur. */
+    replaceAll(next: unknown): boolean {
+      const parsed = userDataSchema.safeParse(next);
+      if (!parsed.success) return false;
+      state = parsed.data;
+      persist();
+      emit();
+      return true;
+    },
+    /** Efface les données de l'appareil (déconnexion, changement de compte). */
+    reset() {
+      state = emptyUserData();
+      persist();
+      emit();
+    },
     subscribe(listener: () => void) {
       listeners.add(listener);
       return () => listeners.delete(listener);
