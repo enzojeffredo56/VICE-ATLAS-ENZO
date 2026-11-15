@@ -89,3 +89,33 @@ export const guideSchema = z.object({
   isDemo: z.boolean(),
 });
 export type Guide = z.infer<typeof guideSchema>;
+
+/* ------------------------------------------------------------------
+   Comparateur Miami
+   ------------------------------------------------------------------ */
+
+/** Statut de vérification d'un rapprochement jeu ↔ ville réelle. */
+export const verificationStatusSchema = z.enum(["demo", "a-verifier", "probable", "verifie"]);
+export type VerificationStatus = z.infer<typeof verificationStatusSchema>;
+
+/** Lieu réel de Miami placé sur le plan schématique (même repère que la carte : origine en bas à gauche). */
+export const miamiSpotSchema = z.object({
+  slug: slugSchema,
+  name: z.string().min(2).max(120),
+  neighborhood: z.string().min(2).max(80),
+  x: z.number().min(0).max(MAP_WIDTH),
+  y: z.number().min(0).max(MAP_HEIGHT),
+  description: z.string().min(10).max(600),
+});
+export type MiamiSpot = z.infer<typeof miamiSpotSchema>;
+
+export const correspondenceSchema = z.object({
+  placeSlug: slugSchema,
+  miamiSlug: slugSchema,
+  /** Pourquoi on rapproche les deux lieux. */
+  summary: z.string().min(10).max(600),
+  status: verificationStatusSchema,
+  sources: z.array(guideSourceSchema).max(10).default([]),
+  isDemo: z.boolean(),
+});
+export type Correspondence = z.infer<typeof correspondenceSchema>;

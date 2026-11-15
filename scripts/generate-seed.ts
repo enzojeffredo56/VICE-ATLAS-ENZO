@@ -5,6 +5,7 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { demoProgressItems } from "../src/content/carnet";
+import { demoCorrespondences, miamiSpots } from "../src/content/comparateur";
 import { guideCategories, demoGuides } from "../src/content/guides";
 import { demoPlaces, placeCategories } from "../src/content/map";
 
@@ -61,6 +62,21 @@ const lines: string[] = [
   "left join public.places p on p.slug = s.place_slug",
   "on conflict (slug) do update set category = excluded.category, title = excluded.title, place_id = excluded.place_id,",
   "  sort_order = excluded.sort_order, status = excluded.status, is_demo = true;",
+  "",
+  "insert into public.miami_spots (slug, name, neighborhood, x, y, description) values",
+  miamiSpots.map((m) => `  (${q(m.slug)}, ${q(m.name)}, ${q(m.neighborhood)}, ${m.x}, ${m.y}, ${q(m.description)})`).join(",\n"),
+  "on conflict (slug) do update set name = excluded.name, neighborhood = excluded.neighborhood, x = excluded.x, y = excluded.y,",
+  "  description = excluded.description;",
+  "",
+  "insert into public.place_correspondences (place_id, miami_spot_id, summary, status, sources, publication, is_demo)",
+  "select p.id, m.id, s.summary, s.status::public.verification_status, s.sources::jsonb, 'published', true from (values",
+  demoCorrespondences
+    .map((c) => `  (${q(c.placeSlug)}, ${q(c.miamiSlug)}, ${q(c.summary)}, ${q(c.status.replace("-", "_"))}, ${q(JSON.stringify(c.sources))})`)
+    .join(",\n"),
+  ") as s (place_slug, miami_slug, summary, status, sources)",
+  "join public.places p on p.slug = s.place_slug join public.miami_spots m on m.slug = s.miami_slug",
+  "on conflict (place_id, miami_spot_id) do update set summary = excluded.summary, status = excluded.status,",
+  "  sources = excluded.sources, publication = excluded.publication, is_demo = true;",
   "",
   "commit;",
   "",

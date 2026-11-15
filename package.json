@@ -14,7 +14,7 @@
     "check": "npm run typecheck && npm run lint && npm run test",
     "test:db": "bash scripts/test-db.sh",
     "db:seed:generate": "tsx scripts/generate-seed.ts",
-    "map:generate": "python3 scripts/generate-demo-map.py"
+    "map:generate": "python3 scripts/generate-demo-map.py && python3 scripts/generate-miami-plan.py"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

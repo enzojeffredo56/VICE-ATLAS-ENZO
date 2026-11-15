@@ -9,9 +9,7 @@ export function SiteFooter() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <LogoMark className="size-10" />
-            <span className="font-display text-xl font-bold tracking-[0.14em]">
-              VICE <span className="text-neon">ATLAS</span>
-            </span>
+            <span className="text-sunset font-brand pr-1 text-4xl leading-none">Vice Atlas</span>
           </div>
           <p className="max-w-sm text-sm text-muted-foreground">{siteConfig.slogan}</p>
           <p className="max-w-md text-xs leading-relaxed text-muted-foreground/80">{siteConfig.disclaimer}</p>

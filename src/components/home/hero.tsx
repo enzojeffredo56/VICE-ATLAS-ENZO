@@ -19,8 +19,6 @@ const STARS = Array.from({ length: 46 }, (_, i) => ({
   delay: (i % 9) * 0.45,
 }));
 
-const TITLE = ["V", "I", "C", "E", " ", "A", "T", "L", "A", "S"];
-
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -118,26 +116,19 @@ export function Hero() {
           <span className="sr-only">VICE ATLAS</span>
           <span
             aria-hidden
-            className="flex flex-col items-center justify-center text-[clamp(3.5rem,19vw,6rem)] sm:flex-row sm:gap-[0.22em] sm:text-[clamp(4rem,11vw,9.5rem)]"
+            className="font-brand flex flex-wrap items-baseline justify-center gap-x-[0.18em] text-[clamp(4.6rem,21vw,7rem)] leading-[1.05] sm:text-[clamp(6rem,14vw,12rem)]"
           >
-            {[TITLE.slice(0, 4), TITLE.slice(5)].map((word, w) => (
-              <span key={w} className="flex whitespace-nowrap">
-                {word.map((char, j) => {
-                  const i = w === 0 ? j : j + 5;
-                  return (
-                    <motion.span
-                      key={i}
-                      className={`inline-block ${w === 1 ? "text-neon" : "text-white"} drop-shadow-[0_0_30px_rgb(255_61_145/0.35)]`}
-                      initial={{ opacity: 0, y: 80, rotateX: -90, filter: "blur(12px)" }}
-                      animate={{ opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }}
-                      transition={{ duration: 1, delay: 0.2 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                      whileHover={{ y: -12, scale: 1.06, transition: { duration: 0.25 } }}
-                    >
-                      {char}
-                    </motion.span>
-                  );
-                })}
-              </span>
+            {["Vice", "Atlas"].map((word, i) => (
+              <motion.span
+                key={word}
+                className="text-sunset neon-flicker inline-block px-[0.12em] pb-[0.08em] [animation-delay:1.6s]"
+                initial={{ opacity: 0, clipPath: "inset(-20% 100% -20% -10%)", y: 30, rotate: -4 }}
+                animate={{ opacity: 1, clipPath: "inset(-20% -10% -20% -10%)", y: 0, rotate: -4 }}
+                transition={{ duration: 1.1, delay: 0.25 + i * 0.45, ease: [0.65, 0, 0.35, 1] }}
+                whileHover={{ scale: 1.05, rotate: -2, transition: { duration: 0.3 } }}
+              >
+                {word}
+              </motion.span>
             ))}
           </span>
         </h1>

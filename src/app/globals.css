@@ -77,6 +77,7 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-brand: var(--font-yellowtail), "Brush Script MT", cursive;
 
   --radius-sm: calc(var(--radius) - 6px);
   --radius-md: calc(var(--radius) - 3px);
@@ -150,6 +151,18 @@
     color: transparent;
   }
   .text-glow-pink { text-shadow: 0 0 24px rgb(255 61 145 / 0.55); }
+
+  /* Logo : enseigne néon au coucher du soleil */
+  .text-sunset {
+    background: linear-gradient(180deg, #ffe08a 0%, #ff9a5a 30%, #ff3d91 62%, #b44cf2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 0.06em rgb(255 61 145 / 0.75)) drop-shadow(0 0 0.22em rgb(255 61 145 / 0.35));
+  }
+  .neon-flicker {
+    animation: neon-flicker 2.8s ease-out 1;
+  }
   .text-glow-cyan { text-shadow: 0 0 24px rgb(0 212 255 / 0.55); }
 
   /* Panneau verre */
@@ -196,6 +209,11 @@
     opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+}
+
+@keyframes neon-flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.35; }
 }
 
 @property --angle {

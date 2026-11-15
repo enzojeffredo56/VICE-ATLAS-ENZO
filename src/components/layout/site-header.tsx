@@ -104,9 +104,7 @@ export function SiteHeader() {
             <SheetContent side="right" className="p-0">
               <div className="flex items-center justify-between border-b border-white/10 p-4 pl-5">
                 <SheetTitle asChild>
-                  <span className="font-display font-bold tracking-[0.14em]">
-                    VICE <span className="text-neon">ATLAS</span>
-                  </span>
+                  <span className="text-sunset font-brand pr-1 text-3xl leading-none">Vice Atlas</span>
                 </SheetTitle>
                 <SheetClose asChild>
                   <Button variant="ghost" size="icon" aria-label="Fermer le menu">

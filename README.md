@@ -11,7 +11,7 @@ VICE ATLAS n'est ni affilié, ni approuvé, ni sponsorisé par Rockstar Games ou
 
 Next.js 16 (App Router, Cache Components) · TypeScript strict · Tailwind CSS 4 · shadcn/ui (Radix) · Lucide ·
 Motion (animations) · Lenis (défilement fluide) · Zod · Supabase (`@supabase/ssr`) · Vitest + Testing Library.
-Leaflet / React Leaflet (carte en `CRS.Simple`). Prévus ensuite : Google Maps, Stripe.
+Leaflet / React Leaflet (cartes en `CRS.Simple` sur des plans dessinés par VICE ATLAS). Prévu ensuite : Stripe.
 
 ## Démarrage
 
@@ -35,7 +35,7 @@ Ouvre http://localhost:3000.
 | `npm run check` | Les trois à la suite |
 | `npm run test:db` | Migrations, seed et règles d'accès (RLS) testés sur un PostgreSQL local jetable |
 | `npm run db:seed:generate` | Régénère `supabase/seed.sql` depuis le contenu de démo |
-| `npm run map:generate` | Régénère la carte fictive de démonstration (SVG) |
+| `npm run map:generate` | Régénère la carte fictive et le plan schématique de Miami (SVG) |
 
 ## Base de données (Supabase)
 
@@ -87,7 +87,7 @@ de survol sont désactivés au tactile. Navigation complète au clavier, lien «
 
 1. ✅ Configuration, architecture, design et accueil
 2. ✅ Carte, carnet et guide
-3. Comparateur Miami
+3. ✅ Comparateur Miami (plans dessinés par VICE ATLAS, sans Google)
 4. Comptes et profils
 5. Avis VICE ATLAS, XP et badges
 6. GTA Roulette et salons

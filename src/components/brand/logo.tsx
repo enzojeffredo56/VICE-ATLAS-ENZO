@@ -11,8 +11,8 @@ export function Logo({ className, compact = false }: { className?: string; compa
     >
       <LogoMark className="size-9 transition-transform duration-700 ease-out group-hover:rotate-[360deg]" />
       {!compact && (
-        <span className="font-display text-lg leading-none font-bold tracking-[0.14em]">
-          VICE <span className="text-neon">ATLAS</span>
+        <span className="text-sunset font-brand pr-1 text-[1.9rem] leading-none transition-[filter] duration-300 group-hover:brightness-125">
+          Vice Atlas
         </span>
       )}
     </Link>

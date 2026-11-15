@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Space_Grotesk, Yellowtail } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
@@ -13,6 +13,8 @@ import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 const spaceGrotesk = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"], display: "swap" });
+// Police du logo : script néon façon enseigne de Miami années 80 (police libre, licence OFL)
+const brand = Yellowtail({ variable: "--font-yellowtail", weight: "400", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.NEXT_PUBLIC_SITE_URL),
@@ -40,7 +42,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${inter.variable} ${spaceGrotesk.variable} dark`}>
+    <html lang="fr" className={`${inter.variable} ${spaceGrotesk.variable} ${brand.variable} dark`}>
       <body className="min-h-dvh overflow-x-clip">
         <a
           href="#contenu"

@@ -5,8 +5,20 @@ import { createClient } from "@supabase/supabase-js";
 import { demoPlaces, placeCategories } from "@/content/map";
 import { demoGuides } from "@/content/guides";
 import { demoProgressItems } from "@/content/carnet";
+import { demoCorrespondences, miamiSpots } from "@/content/comparateur";
 import { publicEnv } from "@/lib/env";
-import { guideSchema, placeSchema, progressItemSchema, type Guide, type Place, type ProgressItem } from "./schemas";
+import {
+  correspondenceSchema,
+  guideSchema,
+  miamiSpotSchema,
+  placeSchema,
+  progressItemSchema,
+  type Correspondence,
+  type Guide,
+  type MiamiSpot,
+  type Place,
+  type ProgressItem,
+} from "./schemas";
 
 /**
  * Accès au contenu public (lieux, guides, éléments du carnet).
@@ -107,4 +119,33 @@ export async function getProgressItems(): Promise<ProgressItem[]> {
       isDemo: row.is_demo,
     }),
   );
+}
+
+export async function getComparator(): Promise<{ spots: MiamiSpot[]; correspondences: Correspondence[] }> {
+  "use cache";
+  cacheTag("comparateur");
+  cacheLife("hours");
+  const sb = publicClient();
+  if (!sb) return { spots: miamiSpots, correspondences: demoCorrespondences };
+  const [spotsRes, corrRes] = await Promise.all([
+    sb.from("miami_spots").select("slug,name,neighborhood,x,y,description"),
+    sb
+      .from("place_correspondences")
+      .select("summary,status,sources,is_demo,places(slug),miami_spots(slug)")
+      .eq("publication", "published"),
+  ]);
+  if (spotsRes.error) throw new Error(`Lecture du plan de Miami impossible : ${spotsRes.error.message}`);
+  if (corrRes.error) throw new Error(`Lecture des correspondances impossible : ${corrRes.error.message}`);
+  const spots = (spotsRes.data ?? []).map((r) => miamiSpotSchema.parse({ ...r, x: Number(r.x), y: Number(r.y) }));
+  const correspondences = (corrRes.data ?? []).map((r) =>
+    correspondenceSchema.parse({
+      placeSlug: (r.places as unknown as { slug: string } | null)?.slug,
+      miamiSlug: (r.miami_spots as unknown as { slug: string } | null)?.slug,
+      summary: r.summary,
+      status: String(r.status).replace("_", "-"),
+      sources: r.sources,
+      isDemo: r.is_demo,
+    }),
+  );
+  return { spots, correspondences };
 }

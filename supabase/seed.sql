@@ -86,4 +86,33 @@ left join public.places p on p.slug = s.place_slug
 on conflict (slug) do update set category = excluded.category, title = excluded.title, place_id = excluded.place_id,
   sort_order = excluded.sort_order, status = excluded.status, is_demo = true;
 
+insert into public.miami_spots (slug, name, neighborhood, x, y, description) values
+  ('cape-florida-light', 'Phare de Cape Florida', 'Key Biscayne', 1445, 145, 'Phare historique à la pointe sud de Key Biscayne, dans le parc d''État Bill Baggs Cape Florida. C''est la plus ancienne construction encore debout du comté de Miami-Dade.'),
+  ('bayside-marketplace', 'Bayside Marketplace', 'Downtown', 1085, 940, 'Centre commercial à ciel ouvert au bord de la baie de Biscayne, avec boutiques, restaurants et départs d''excursions en bateau.'),
+  ('wynwood', 'Wynwood', 'Wynwood', 915, 1100, 'Ancien quartier d''entrepôts au nord du centre-ville, connu pour ses fresques murales en plein air.'),
+  ('ocean-drive', 'Ocean Drive', 'South Beach', 1572, 810, 'Boulevard de South Beach bordé d''hôtels Art déco, face à la plage et à Lummus Park.'),
+  ('dinner-key', 'Marinas de Dinner Key', 'Coconut Grove', 835, 395, 'Les marinas de Coconut Grove, au bord de la baie de Biscayne, point de départ de nombreuses sorties en mer.'),
+  ('miami-international-airport', 'Aéroport international de Miami', 'Ouest de Miami', 395, 1100, 'Le principal aéroport de la ville, à l''ouest du centre-ville.'),
+  ('rickenbacker-causeway', 'Rickenbacker Causeway', 'Virginia Key', 1340, 545, 'Route qui relie Brickell à Virginia Key et Key Biscayne, avec une vue dégagée sur les tours du centre-ville.'),
+  ('domino-park', 'Domino Park', 'Little Havana', 760, 810, 'Petit parc de Calle Ocho, à Little Havana, où les habitués se retrouvent pour jouer aux dominos.'),
+  ('vizcaya', 'Vizcaya Museum and Gardens', 'Coconut Grove', 930, 550, 'Villa du début du XXe siècle et ses jardins, au bord de la baie, entre Brickell et Coconut Grove.')
+on conflict (slug) do update set name = excluded.name, neighborhood = excluded.neighborhood, x = excluded.x, y = excluded.y,
+  description = excluded.description;
+
+insert into public.place_correspondences (place_id, miami_spot_id, summary, status, sources, publication, is_demo)
+select p.id, m.id, s.summary, s.status::public.verification_status, s.sources::jsonb, 'published', true from (values
+  ('phare-du-port-neon', 'cape-florida-light', 'Un phare isolé qui garde l''entrée d''un port, comme celui de Cape Florida à l''entrée de la baie.', 'demo', '[{"label":"Wikipédia (en anglais) : Cape Florida Light","url":"https://en.wikipedia.org/wiki/Cape_Florida_Light"}]'),
+  ('marche-flottant-des-docks', 'bayside-marketplace', 'Un marché animé au bord de l''eau, avec boutiques et pontons.', 'demo', '[{"label":"Wikipédia (en anglais) : Bayside Marketplace","url":"https://en.wikipedia.org/wiki/Bayside_Marketplace"}]'),
+  ('galerie-murale-de-corail', 'wynwood', 'Une ruelle couverte de fresques, dans l''esprit des murs peints de Wynwood.', 'demo', '[{"label":"Wikipédia (en anglais) : Wynwood","url":"https://en.wikipedia.org/wiki/Wynwood"}]'),
+  ('corniche-de-la-marina', 'ocean-drive', 'Une promenade en bord de mer, comme Ocean Drive face à la plage de South Beach.', 'demo', '[{"label":"Wikipédia (en anglais) : Ocean Drive","url":"https://en.wikipedia.org/wiki/Ocean_Drive"}]'),
+  ('club-nautique', 'dinner-key', 'Le point de départ des sorties en mer, comme les marinas de Coconut Grove.', 'demo', '[{"label":"Wikipédia (en anglais) : Coconut Grove","url":"https://en.wikipedia.org/wiki/Coconut_Grove"}]'),
+  ('piste-de-l-aerodrome', 'miami-international-airport', 'Les pistes d''un aéroport, à l''écart du centre.', 'demo', '[{"label":"Wikipédia (en anglais) : Miami International Airport","url":"https://en.wikipedia.org/wiki/Miami_International_Airport"}]'),
+  ('belvedere-de-la-palmeraie', 'rickenbacker-causeway', 'Un point de vue panoramique sur la ville, comme depuis la Rickenbacker Causeway.', 'demo', '[{"label":"Wikipédia (en anglais) : Rickenbacker Causeway","url":"https://en.wikipedia.org/wiki/Rickenbacker_Causeway"}]'),
+  ('salle-d-arcade-neon', 'domino-park', 'Un lieu de jeu de quartier où l''on se retrouve entre amis, comme Domino Park à Little Havana.', 'demo', '[{"label":"Wikipédia (en anglais) : Little Havana","url":"https://en.wikipedia.org/wiki/Little_Havana"}]'),
+  ('jardin-du-quartier-corail', 'vizcaya', 'Un grand jardin au bord de l''eau, comme ceux de Vizcaya.', 'demo', '[{"label":"Wikipédia (en anglais) : Vizcaya Museum and Gardens","url":"https://en.wikipedia.org/wiki/Vizcaya_Museum_and_Gardens"}]')
+) as s (place_slug, miami_slug, summary, status, sources)
+join public.places p on p.slug = s.place_slug join public.miami_spots m on m.slug = s.miami_slug
+on conflict (place_id, miami_spot_id) do update set summary = excluded.summary, status = excluded.status,
+  sources = excluded.sources, publication = excluded.publication, is_demo = true;
+
 commit;
